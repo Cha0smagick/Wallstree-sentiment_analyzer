@@ -1,5 +1,5 @@
 import streamlit as st
-imporat requests
+import requests
 import time
 
 # Function to fetch top 50 stocks discussed on Wallstreetbets
@@ -29,6 +29,10 @@ def get_reddit_stocks(date=None, max_retries=3):
 
 # Function to fetch TTM Squeeze stocks
 def get_ttm_squeeze_stocks(date=None):
+    if not date:
+        st.warning("Please enter a date before fetching TTM Squeeze stocks.")
+        return None
+
     url = f'https://tradestie.com/api/v1/apps/ttm-squeeze-stocks?date={date}'
     response = requests.get(url)
     
@@ -47,32 +51,32 @@ st.title('Wallstreetbets & TTM Squeeze Stocks')
 selected_date = st.text_input('Enter date (yyyy-mm-dd):', '')
 
 # Button to fetch and display Reddit stocks
-if st.button('Fetch Reddit Stocks'):
+if st.button('Fetch Top 50 Reddit Stocks'):
     reddit_stocks = get_reddit_stocks(selected_date)
     if reddit_stocks is not None:
         st.header('Top 50 Stocks Discussed on Wallstreetbets')
         with st.container():
             for stock in reddit_stocks:
-                st.text(f"Ticker: {stock.get('ticker', 'N/A')} | Comments: {stock.get('no_of_comments', 'N/A')} | Sentiment: ")
-                if stock.get('sentiment') == 'Bullish':
-                    st.markdown(f"<font color='green'>{stock['sentiment']} ({stock.get('sentiment_score', 0.0):.2f})</font>", unsafe_allow_html=True)
-                else:
-                    st.markdown(f"<font color='red'>{stock['sentiment']} ({stock.get('sentiment_score', 0.0):.2f})</font>", unsafe_allow_html=True)
-                st.text("")
+                st.table({
+                    'Ticker': [stock.get('ticker', 'N/A')],
+                    'Comments': [stock.get('no_of_comments', 'N/A')],
+                    'Sentiment': [f"{stock.get('sentiment', 'N/A')} ({stock.get('sentiment_score', 0.0):.2f})"]
+                })
 
 # Button to fetch and display TTM Squeeze stocks
-if st.button('Fetch TTM Squeeze Stocks'):
+if st.button('Fetch TTM Squeeze Stocks for Date'):
     ttm_squeeze_stocks = get_ttm_squeeze_stocks(selected_date)
     if ttm_squeeze_stocks is not None:
         st.header('TTM Squeeze Stocks')
         with st.container():
             for stock in ttm_squeeze_stocks:
-                st.text(f"Date: {stock.get('date', 'N/A')} | In Squeeze: {stock.get('in_squeeze', 'N/A')} | Days in Squeeze: {stock.get('no_of_days_in_squeeze', 'N/A')} | Days out of Squeeze: {stock.get('no_of_days_out_of_squeeze', 'N/A')}")
-                if stock.get('in_squeeze'):
-                    st.markdown("<font color='green'>In Squeeze</font>", unsafe_allow_html=True)
-                else:
-                    st.markdown("<font color='red'>Out of Squeeze</font>", unsafe_allow_html=True)
-                st.text("")
+                st.table({
+                    'Date': [stock.get('date', 'N/A')],
+                    'In Squeeze': [stock.get('in_squeeze', 'N/A')],
+                    'Days in Squeeze': [stock.get('no_of_days_in_squeeze', 'N/A')],
+                    'Days out of Squeeze': [stock.get('no_of_days_out_of_squeeze', 'N/A')],
+                    'Status': ['In Squeeze' if stock.get('in_squeeze') else 'Out of Squeeze']
+                })
 
 # Apply dark background without scrollbars
 st.markdown(
