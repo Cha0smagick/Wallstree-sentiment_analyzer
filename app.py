@@ -50,35 +50,39 @@ st.title('Wallstreetbets & TTM Squeeze Stocks')
 # Get date from user
 selected_date = st.text_input('Enter date (yyyy-mm-dd):', '')
 
-# Button to fetch and display Reddit stocks
-if st.button('Fetch Top 25 Reddit Stocks'):
-    reddit_stocks = get_reddit_stocks(selected_date)
-    if reddit_stocks is not None:
-        st.header('Top 25 Stocks Discussed on Wallstreetbets')
-        table_data = []
-        for stock in reddit_stocks:
-            table_data.append({
-                'Ticker': stock.get('ticker', 'N/A'),
-                'Comments': stock.get('no_of_comments', 'N/A'),
-                'Sentiment': f"{stock.get('sentiment', 'N/A')} ({stock.get('sentiment_score', 0.0):.2f})"
-            })
-        st.table(table_data)
+# Validate if a date is entered
+if not selected_date:
+    st.warning("Please enter a date before fetching stocks.")
+else:
+    # Button to fetch and display Reddit stocks
+    if st.button('Fetch Top 25 Reddit Stocks'):
+        reddit_stocks = get_reddit_stocks(selected_date)
+        if reddit_stocks is not None:
+            st.header('Top 25 Stocks Discussed on Wallstreetbets')
+            table_data = []
+            for stock in reddit_stocks:
+                table_data.append({
+                    'Ticker': stock.get('ticker', 'N/A'),
+                    'Comments': stock.get('no_of_comments', 'N/A'),
+                    'Sentiment': f"{stock.get('sentiment', 'N/A')} ({stock.get('sentiment_score', 0.0):.2f})"
+                })
+            st.table(table_data)
 
-# Button to fetch and display TTM Squeeze stocks
-if st.button('Fetch Top 25 TTM Squeeze Stocks for Date'):
-    ttm_squeeze_stocks = get_ttm_squeeze_stocks(selected_date)
-    if ttm_squeeze_stocks is not None:
-        st.header('Top 25 TTM Squeeze Stocks')
-        table_data = []
-        for stock in ttm_squeeze_stocks:
-            table_data.append({
-                'Date': stock.get('date', 'N/A'),
-                'In Squeeze': stock.get('in_squeeze', 'N/A'),
-                'Days in Squeeze': stock.get('no_of_days_in_squeeze', 'N/A'),
-                'Days out of Squeeze': stock.get('no_of_days_out_of_squeeze', 'N/A'),
-                'Status': 'In Squeeze' if stock.get('in_squeeze') else 'Out of Squeeze'
-            })
-        st.table(table_data)
+    # Button to fetch and display TTM Squeeze stocks
+    if st.button('Fetch Top 25 TTM Squeeze Stocks for Date'):
+        ttm_squeeze_stocks = get_ttm_squeeze_stocks(selected_date)
+        if ttm_squeeze_stocks is not None:
+            st.header('Top 25 TTM Squeeze Stocks')
+            table_data = []
+            for stock in ttm_squeeze_stocks:
+                table_data.append({
+                    'Date': stock.get('date', 'N/A'),
+                    'In Squeeze': stock.get('in_squeeze', 'N/A'),
+                    'Days in Squeeze': stock.get('no_of_days_in_squeeze', 'N/A'),
+                    'Days out of Squeeze': stock.get('no_of_days_out_of_squeeze', 'N/A'),
+                    'Status': 'In Squeeze' if stock.get('in_squeeze') else 'Out of Squeeze'
+                })
+            st.table(table_data)
 
 # Apply dark background without scrollbars
 st.markdown(
