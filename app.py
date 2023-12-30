@@ -17,8 +17,14 @@ def get_reddit_stocks(date=None, max_retries=3, limit=25):
             data = response.json()
             return data[:limit]  # Limit results to the top 25
         elif response.status_code == 429:
-            st.warning(f"Rate limit exceeded. Retrying in 5 seconds. Retry attempt: {retries + 1}/{max_retries}")
-            time.sleep(5)
+            retry_message = st.empty()
+            retry_message.warning(f"Rate limit exceeded. Retrying in 2 minutes. Retry attempt: {retries + 1}/{max_retries}")
+            
+            # Countdown timer
+            for i in range(120, 0, -1):
+                time.sleep(1)
+                retry_message.warning(f"Retrying in {i} seconds...")
+            
             retries += 1
         else:
             st.error(f"Error fetching Reddit stocks. Status code: {response.status_code}")
