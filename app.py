@@ -91,7 +91,7 @@ else:
                     'Status': 'In Squeeze' if stock.get('in_squeeze') else 'Out of Squeeze'
                 })
             df_ttm_squeeze = pd.DataFrame(table_data)
-            st.dataframe(df_ttm_squeeze.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: black', subset=['Date', 'In Squeeze', 'Days in Squeeze', 'Days out of Squeeze']).applymap(lambda x: 'color: yellow' if x == 'N/A' else 'color: green' if x == 'In Squeeze' else 'color: red', subset=['Status']))
+            st.dataframe(df_ttm_squeeze.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: black', subset=['Date', 'In Squeeze']).applymap(lambda x: 'color: yellow' if x == 'N/A' else 'color: green' if x == 'In Squeeze' else 'color: red', subset=['Status']).applymap(lambda x: 'color: red' if x > 0 else 'color: black', subset=['Days out of Squeeze']).applymap(lambda x: 'color: green' if x > 0 else 'color: black', subset=['Days in Squeeze']))
 
 # Apply dark background without scrollbars
 st.markdown(
