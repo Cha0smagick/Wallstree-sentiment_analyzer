@@ -74,7 +74,7 @@ else:
                     'Sentiment': f"{stock.get('sentiment', 'N/A')} ({stock.get('sentiment_score', 0.0):.2f})"
                 })
             df_reddit = pd.DataFrame(table_data)
-            st.dataframe(df_reddit.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: red', subset=['Ticker', 'Comments']).applymap(lambda x: f'color: {"yellow" if "N/A" in x else "green" if float(x.split("(")[1].split(")")[0]) > 0 else "red"}', subset=['Sentiment']))
+            st.dataframe(df_reddit.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: black', subset=['Ticker', 'Comments']).applymap(lambda x: f'color: {"yellow" if "N/A" in x else "green" if float(x.split("(")[1].split(")")[0]) > 0 else "red"}', subset=['Sentiment']))
 
     # Button to fetch and display TTM Squeeze stocks
     if st.button('Fetch Top 25 TTM Squeeze Stocks for Date'):
@@ -91,7 +91,7 @@ else:
                     'Status': 'In Squeeze' if stock.get('in_squeeze') else 'Out of Squeeze'
                 })
             df_ttm_squeeze = pd.DataFrame(table_data)
-            st.dataframe(df_ttm_squeeze.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: red', subset=['Date', 'In Squeeze', 'Days in Squeeze', 'Days out of Squeeze']).applymap(lambda x: 'color: yellow' if x == 'N/A' else 'color: green' if x == 'In Squeeze' else 'color: red', subset=['Status']))
+            st.dataframe(df_ttm_squeeze.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: black', subset=['Date', 'In Squeeze', 'Days in Squeeze', 'Days out of Squeeze']).applymap(lambda x: 'color: yellow' if x == 'N/A' else 'color: green' if x == 'In Squeeze' else 'color: red', subset=['Status']))
 
 # Apply dark background without scrollbars
 st.markdown(
