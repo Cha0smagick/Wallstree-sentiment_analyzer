@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import pandas as pd
 
 # Function to fetch top 25 stocks discussed on Wallstreetbets
 def get_reddit_stocks(date=None, max_retries=3, limit=25):
@@ -72,7 +73,8 @@ else:
                     'Comments': stock.get('no_of_comments', 'N/A'),
                     'Sentiment': f"{stock.get('sentiment', 'N/A')} ({stock.get('sentiment_score', 0.0):.2f})"
                 })
-            st.table(table_data)
+            df_reddit = pd.DataFrame(table_data)
+            st.dataframe(df_reddit.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: red', subset=['Ticker', 'Comments']).applymap(lambda x: f'color: {"yellow" if "N/A" in x else "green" if float(x.split("(")[1].split(")")[0]) > 0 else "red"}', subset=['Sentiment']))
 
     # Button to fetch and display TTM Squeeze stocks
     if st.button('Fetch Top 25 TTM Squeeze Stocks for Date'):
@@ -88,7 +90,8 @@ else:
                     'Days out of Squeeze': stock.get('no_of_days_out_of_squeeze', 'N/A'),
                     'Status': 'In Squeeze' if stock.get('in_squeeze') else 'Out of Squeeze'
                 })
-            st.table(table_data)
+            df_ttm_squeeze = pd.DataFrame(table_data)
+            st.dataframe(df_ttm_squeeze.style.applymap(lambda x: 'color: green' if x == 'N/A' else 'color: red', subset=['Date', 'In Squeeze', 'Days in Squeeze', 'Days out of Squeeze']).applymap(lambda x: 'color: yellow' if x == 'N/A' else 'color: green' if x else 'color: red', subset=['Status']))
 
 # Apply dark background without scrollbars
 st.markdown(
